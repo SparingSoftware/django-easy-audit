@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 
@@ -22,7 +23,7 @@ class CRUDEvent(models.Model):
     object_id = models.IntegerField()  # we should try to allow other ID types
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_constraint=False)
     object_repr = models.TextField(null=True, blank=True)
-    changed_fields = models.TextField(null=True, blank=True)
+    changed_fields = JSONField(null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
                              blank=True, on_delete=models.SET_NULL,
                              db_constraint=False)
