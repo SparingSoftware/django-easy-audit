@@ -97,7 +97,6 @@ def pre_save(sender, instance, raw, using, update_fields, **kwargs):
                         crud_event = CRUDEvent.objects.create(
                             event_type=event_type,
                             object_repr=str(instance),
-                            object_json_repr=object_json_repr,
                             changed_fields=changed_fields,
                             content_type_id=c_t.id,
                             object_id=instance.pk,
@@ -157,7 +156,6 @@ def post_save(sender, instance, created, raw, using, update_fields, **kwargs):
                         crud_event = CRUDEvent.objects.create(
                             event_type=event_type,
                             object_repr=str(instance),
-                            object_json_repr=object_json_repr,
                             content_type_id=c_t.id,
                             object_id=instance.pk,
                             user_id=getattr(user, 'id', None),
@@ -200,22 +198,8 @@ def m2m_changed(sender, instance, action, reverse, model, pk_set, using, **kwarg
             if action not in ("post_add", "post_remove", "post_clear"):
                 return False
 
-            object_json_repr = serializers.serialize("json", [instance])
-
             if reverse:
                 event_type = CRUDEvent.M2M_CHANGE_REV
-                # add reverse M2M changes to event. must use json lib because
-                # django serializers ignore extra fields.
-                tmp_repr = json.loads(object_json_repr)
-
-                m2m_rev_field = _m2m_rev_field_name(instance._meta.concrete_model, model)
-                related_instances = getattr(instance, m2m_rev_field).all()
-                related_ids = [r.pk for r in related_instances]
-
-                tmp_repr[0]['m2m_rev_model'] = force_text(model._meta)
-                tmp_repr[0]['m2m_rev_pks'] = related_ids
-                tmp_repr[0]['m2m_rev_action'] = action
-                object_json_repr = json.dumps(tmp_repr)
             else:
                 event_type = CRUDEvent.M2M_CHANGE
 
@@ -237,7 +221,6 @@ def m2m_changed(sender, instance, action, reverse, model, pk_set, using, **kwarg
                     crud_event = CRUDEvent.objects.create(
                         event_type=event_type,
                         object_repr=str(instance),
-                        object_json_repr=object_json_repr,
                         content_type_id=c_t.id,
                         object_id=instance.pk,
                         user_id=getattr(user, 'id', None),
@@ -280,7 +263,6 @@ def post_delete(sender, instance, using, **kwargs):
                     crud_event = CRUDEvent.objects.create(
                         event_type=CRUDEvent.DELETE,
                         object_repr=str(instance),
-                        object_json_repr=object_json_repr,
                         content_type_id=c_t.id,
                         object_id=instance.pk,
                         user_id=getattr(user, 'id', None),

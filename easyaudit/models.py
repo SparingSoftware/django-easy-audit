@@ -22,7 +22,6 @@ class CRUDEvent(models.Model):
     object_id = models.IntegerField()  # we should try to allow other ID types
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_constraint=False)
     object_repr = models.TextField(null=True, blank=True)
-    object_json_repr = models.TextField(null=True, blank=True)
     changed_fields = models.TextField(null=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
                              blank=True, on_delete=models.SET_NULL,

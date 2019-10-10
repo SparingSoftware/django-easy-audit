@@ -17,11 +17,11 @@ class CRUDEventAdmin(EasyAuditModelAdmin):
     list_display = ['get_event_type_display', 'content_type', 'object_id', 'object_repr_link', 'user_link', 'datetime']
     date_hierarchy = 'datetime'
     list_filter = CRUD_EVENT_LIST_FILTER
-    search_fields = ['=object_id', 'object_json_repr', ]
+    search_fields = ['=object_id', ]
     readonly_fields = ['event_type', 'object_id', 'content_type',
-                       'object_repr', 'object_json_repr_prettified', 'user',
+                       'object_repr', 'user',
                        'user_pk_as_string', 'datetime', 'changed_fields_prettified']
-    exclude = ['object_json_repr', 'changed_fields']
+    exclude = ['changed_fields']
 
     def object_repr_link(self, obj):
         if obj.event_type == CRUDEvent.DELETE:
@@ -38,11 +38,6 @@ class CRUDEventAdmin(EasyAuditModelAdmin):
         return mark_safe(html)
 
     object_repr_link.short_description = 'object repr'
-
-    def object_json_repr_prettified(self, obj):
-        return prettify_json(obj.object_json_repr)
-
-    object_json_repr_prettified.short_description = 'object json repr'
 
     def changed_fields_prettified(self, obj):
         return prettify_json(obj.changed_fields)
