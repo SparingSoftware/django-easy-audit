@@ -93,7 +93,7 @@ class TestMiddleware(TestCase):
         # set user/request
         set_current_user(user)
         obj = TestModel.objects.create()
-        self.assertEqual(obj.id, 1)
+        self.assertEqual(TestModel.objects.count(), 1)
         crud_event_qs = CRUDEvent.objects.filter(object_id=obj.id, content_type=ContentType.objects.get_for_model(obj))
         self.assertEqual(crud_event_qs.count(), 1)
         crud_event = crud_event_qs[0]
@@ -102,7 +102,7 @@ class TestMiddleware(TestCase):
         # clear request
         clear_request()
         obj = TestModel.objects.create()
-        self.assertEqual(obj.id, 2)
+        self.assertEqual(TestModel.objects.count(), 2)
         crud_event_qs = CRUDEvent.objects.filter(object_id=obj.id, content_type=ContentType.objects.get_for_model(obj))
         self.assertEqual(crud_event_qs.count(), 1)
         crud_event = crud_event_qs[0]
