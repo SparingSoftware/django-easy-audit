@@ -1,14 +1,19 @@
 # django-easy-audit
 
-Yet another Django audit log app, hopefully the easiest one.
+This is a fork of yet another Django audit log app [django-easy-audit](https://github.com/soynatan/django-easy-audit): 
 
 This app allows you to keep track of every action taken by your users.
+
+## Improvements
+* log update only if some fields have changed,
+* store `changed_fields` as Postgres JSONField,
+* do not store entire object json representation.
 
 ## Quickstart
 
 1. Install Django Easy Audit by running `pip install django-easy-audit`.
 
-   *Alternatively, you can download the [latest release](https://github.com/soynatan/django-easy-audit/releases) from GitHub, unzip it, and place the folder 'easyaudit' in the root of your project.*
+   *Alternatively, you can download the [latest release](https://github.com/SparingSoftware/django-easy-audit/releases) from GitHub, unzip it, and place the folder 'easyaudit' in the root of your project.*
 
 2. Add 'easyaudit' to your `INSTALLED_APPS` like this:
 
@@ -34,7 +39,7 @@ This app allows you to keep track of every action taken by your users.
 
 ## Settings
 
-For an exhaustive list of available settings, please [check our wiki](https://github.com/soynatan/django-easy-audit/wiki/Settings).
+For an exhaustive list of available settings, please [check our wiki](https://github.com/SparingSoftware/django-easy-audit/wiki/Settings).
 
 Below are some of the settings you may want to use. These should be defined in your project's `settings.py` file:
 
@@ -57,7 +62,7 @@ Below are some of the settings you may want to use. These should be defined in y
   A list of URLs which will be ignored by Django Easy Audit.
   List items are expected to be regular expressions that
   will be matched against the URL path.
-  [Check our wiki](https://github.com/soynatan/django-easy-audit/wiki/Settings#request-auditing)
+  [Check our wiki](https://github.com/SparingSoftware/django-easy-audit/wiki/Settings#request-auditing)
   for more details on how to use it.
 
 * `DJANGO_EASY_AUDIT_CRUD_DIFFERENCE_CALLBACKS`
@@ -112,7 +117,7 @@ It is not that they don't work or that they are not great apps. But in case you 
 easier to set up, and you don't want your code to depend so much on a third-party app, Django Easy Audit
 may be your best choice.
 
-The good thing about this app is that it doesn't get in the way. It is [easy and quick to install](https://github.com/soynatan/django-easy-audit/wiki/Installation), and it
+The good thing about this app is that it doesn't get in the way. It is [easy and quick to install](https://github.com/SparingSoftware/django-easy-audit/wiki/Installation), and it
 begins logging everything right away, without you having to inject code anywhere in your project.
 
 ## Contact

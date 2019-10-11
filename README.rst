@@ -2,7 +2,7 @@
 django-easy-audit
 =================
 
-Yet another Django audit log app, hopefully the simplest one.
+This is a fork of yet another Django audit log app https://github.com/soynatan/django-easy-audit .
 
 Quick start
 -----------
