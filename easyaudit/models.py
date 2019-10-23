@@ -30,6 +30,7 @@ class CRUDEvent(models.Model):
     user_pk_as_string = models.CharField(max_length=255, null=True, blank=True,
                                          help_text='String version of the user pk')
     datetime = models.DateTimeField(auto_now_add=True)
+    change_reason = models.CharField(max_length=128, blank=True)
 
     def is_create(self):
         return self.CREATE == self.event_type

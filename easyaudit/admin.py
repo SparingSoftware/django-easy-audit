@@ -24,7 +24,7 @@ class CRUDEventAdmin(EasyAuditModelAdmin):
     search_fields = ['=object_id', ]
     readonly_fields = ['event_type', 'object_id', 'content_type',
                        'object_repr', 'user',
-                       'user_pk_as_string', 'datetime', 'changed_fields_prettified']
+                       'user_pk_as_string', 'datetime', 'changed_fields_prettified', 'change_reason']
     exclude = ['changed_fields']
 
     def object_repr_link(self, obj):

@@ -23,7 +23,6 @@ class TestAuditModels(TestCase):
 
     def test_create_model(self):
         obj = TestModel.objects.create()
-        self.assertEqual(obj.id, 1)
         crud_event_qs = CRUDEvent.objects.filter(object_id=obj.id, content_type=ContentType.objects.get_for_model(obj))
         self.assertEqual(1, crud_event_qs.count())
         crud_event = crud_event_qs[0]
@@ -50,6 +49,19 @@ class TestAuditModels(TestCase):
         self.assertEqual(2, crud_event_qs.count())
         last_change = crud_event_qs.first()
         self.assertIn('name', last_change.changed_fields)
+
+    def test_change_reason(self):
+        obj = TestModel.objects.create()
+        obj.name = 'changed name'
+        obj.change_reason = 'A really good reason'
+        obj.save()
+
+        update = CRUDEvent.objects.get(
+            object_id=obj.id,
+            content_type=ContentType.objects.get_for_model(obj),
+            event_type=CRUDEvent.UPDATE
+        )
+        self.assertEqual(update.change_reason, 'A really good reason')
 
     def test_fake_update(self):
         obj = TestModel.objects.create()
@@ -146,4 +158,3 @@ class TestAuditAdmin(TestCase):
         response = self.client.get(reverse('admin:easyaudit_requestevent_changelist'))
         self.assertEqual(200, response.status_code)
         filters = self._list_filters(response.content)
-        print(filters)
