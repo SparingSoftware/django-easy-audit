@@ -1,4 +1,8 @@
 from django.contrib import admin
+from django.contrib.admin import ModelAdmin
+from django.contrib.contenttypes.models import ContentType
+from django.template.response import TemplateResponse
+from django.urls import path
 
 try: # Django 2.0
     from django.urls import reverse
@@ -73,3 +77,40 @@ class RequestEventAdmin(EasyAuditModelAdmin):
 
 if settings.ADMIN_SHOW_REQUEST_EVENTS:
     admin.site.register(RequestEvent, RequestEventAdmin)
+
+
+class ModelAdminWithHistory(ModelAdmin):
+    change_form_template = 'admin/easyaudit/change_form_with_history_button.html'
+
+    def get_urls(self):
+        return [
+            path(
+                '<path:object_id>/history/',
+                self.admin_site.admin_view(self.changes_history),
+                name=f'{self.model._meta.app_label}_{self.model._meta.model_name}_changes_history',
+            ),
+        ] + super().get_urls()
+
+    def changes_history(self, request, object_id):
+        original = self.get_object(request, object_id)
+
+        if hasattr(original, 'history'):
+            history = original.history
+        else:
+            history = CRUDEvent.objects.filter(
+                content_type=ContentType.objects.get_for_model(original), object_id=original.id
+            )
+
+        context = {
+            'opts': self.model._meta,
+            'original': original,
+            'history': history,
+            **self.admin_site.each_context(request),
+        }
+        request.current_app = self.admin_site.name
+
+        return TemplateResponse(
+            request,
+            'admin/easyaudit/changes_history.html',
+            context
+        )
